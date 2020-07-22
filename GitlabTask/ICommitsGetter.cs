@@ -1,7 +1,10 @@
-﻿namespace GitlabTask
+﻿using System;
+using System.Threading.Tasks;
+
+namespace GitlabTask
 {
     public interface ICommitsGetter
     {
-        public Commit[] GetCommitsOfProjectWithId(string id);
+        public Task<Commit[]> GetCommitsOfProject(string projectId, DateTimeOffset since);
     }
 }

@@ -6,7 +6,7 @@ namespace GitlabTask
     {
         public string[] GetProjectNames()
         {
-            //брать из настоящего конфига
+            //TODO брать из настоящего конфига
             throw new NotImplementedException();
         }
     }

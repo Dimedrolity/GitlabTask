@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GitlabTask
 {
@@ -31,7 +32,7 @@ namespace GitlabTask
             return _commands.FirstOrDefault(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
         }
 
-        public void Execute(string[] args)
+        public async Task Execute(string[] args)
         {
             if (args[0].Length == 0)
             {
@@ -48,7 +49,7 @@ namespace GitlabTask
             {
                 // var restArgs = new Span<string>(args, 1, int.MaxValue);
 
-                cmd.Execute(args[1..], _writer);
+                await cmd.Execute(args[1..], _writer);
             }
         }
     }

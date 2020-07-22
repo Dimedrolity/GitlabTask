@@ -2,7 +2,7 @@
 
 namespace GitlabTask
 {
-    public class JsonParser : IJsonParser
+    public class JsonConverter : IJsonConverter
     {
         public Commit[] ConvertJsonToCommits(string json)
         {

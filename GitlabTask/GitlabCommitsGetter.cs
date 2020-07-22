@@ -1,20 +1,29 @@
-﻿namespace GitlabTask
+﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+namespace GitlabTask
 {
     public class GitlabCommitsGetter : ICommitsGetter
     {
-        private readonly IJsonParser _jsonParser;
+        private readonly IJsonConverter _jsonConverter;
 
-        public GitlabCommitsGetter(IJsonParser jsonParser)
+        public GitlabCommitsGetter(IJsonConverter jsonConverter)
         {
-            _jsonParser = jsonParser;
+            _jsonConverter = jsonConverter;
         }
 
-        public Commit[] GetCommitsOfProjectWithId(string id)
+        private static readonly HttpClient Client = new HttpClient();
+
+        public async Task<Commit[]> GetCommitsOfProject(string projectId, DateTimeOffset since)
         {
-            //send http-get request to Gitlab api
-            //GET /projects/:id/repository/commits
-            var json = "httpclient.getAsync('/projects/:id/repository/commits)'";
-            return _jsonParser.ConvertJsonToCommits(json);
+            //формат даты: YYYY-MM-DDTHH:MM:SSZ, например 2020-07-22T17:40:00Z
+            var url = $"https://gitlab.com/api/v4/projects/{projectId}/repository/commits" + $"?since={since:s}Z";
+
+            using var response = await Client.GetAsync(url);
+
+            var json = await response.Content.ReadAsStringAsync();
+            return _jsonConverter.ConvertJsonToCommits(json);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 
 namespace GitlabTask
 {
@@ -13,6 +14,6 @@ namespace GitlabTask
         public string Name { get; }
         public string Description { get; }
 
-        public abstract void Execute(string[] args, TextWriter writer);
+        public abstract Task Execute(string[] args, TextWriter writer);
     }
 }

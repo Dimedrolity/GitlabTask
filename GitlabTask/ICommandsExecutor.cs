@@ -1,7 +1,9 @@
-﻿namespace GitlabTask
+﻿using System.Threading.Tasks;
+
+namespace GitlabTask
 {
     public interface ICommandsExecutor
     {
-        public void Execute(string[] args);
+        public Task Execute(string[] args);
     }
 }

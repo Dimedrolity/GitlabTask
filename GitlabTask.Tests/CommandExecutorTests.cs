@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
@@ -15,7 +14,6 @@ namespace GitlabTask.Tests
         {
             _writer = new StringWriter();
             _commandsExecutor = new CommandsExecutor(_writer);
-            _commandsExecutor.RegisterCommand(new HelpCommand(_commandsExecutor.GetRegisteredCommandNames));
         }
 
         [Test]
@@ -59,7 +57,23 @@ namespace GitlabTask.Tests
                                     "\r\n";
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
-            Console.WriteLine(actual);
+        }
+
+        [Test]
+        public void HelpCommand()
+        {
+            _commandsExecutor.RegisterCommand(new HelpCommand(_commandsExecutor.GetRegisteredCommandNames));
+            _commandsExecutor.RegisterCommand(new HelpCommand(_commandsExecutor.GetRegisteredCommandNames));
+            _commandsExecutor.RegisterCommand(new HelpCommand(_commandsExecutor.GetRegisteredCommandNames));
+
+            _commandsExecutor.Execute(new[] {"help"});
+            
+            var reader = new StringReader(_writer.ToString());
+
+            const string expected = "help help help";
+            
+            var actual = reader.ReadToEnd();
+            Assert.AreEqual(expected, actual);
         }
     }
 }

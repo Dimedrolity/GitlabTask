@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GitlabTask.Tests
 {
@@ -11,9 +13,9 @@ namespace GitlabTask.Tests
             _projectIdToCommits = projectIdToCommits;
         }
 
-        public Commit[] GetCommitsOfProjectWithId(string id)
+        public Task<Commit[]> GetCommitsOfProject(string projectId, DateTimeOffset since)
         {
-            return _projectIdToCommits[id];
+            return Task.FromResult(_projectIdToCommits[projectId]);
         }
     }
 }

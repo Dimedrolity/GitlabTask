@@ -1,6 +1,6 @@
 ﻿namespace GitlabTask
 {
-    public interface IJsonParser
+    public interface IJsonConverter
     {
         public Commit[] ConvertJsonToCommits(string json);
     }
