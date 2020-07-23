@@ -11,7 +11,7 @@ namespace GitlabTask
         public Config()
         {
             _configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", false, true)
                 .Build();
         }
 

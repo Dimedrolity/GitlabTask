@@ -5,7 +5,7 @@ namespace GitlabTask.Tests
     public class ConfigTests
     {
         [Test]
-        public void TestConfig()
+        public void TestConfigIsNotEmpty()
         {
             var config = new Config();
             var projects = config.GetProjects();

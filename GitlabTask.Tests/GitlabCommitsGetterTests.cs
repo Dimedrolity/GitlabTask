@@ -15,11 +15,12 @@ namespace GitlabTask.Tests
         {
             _writer = new StringWriter();
             _commandsExecutor = new CommandsExecutor(_writer);
-            _commandsExecutor.RegisterCommand(new HelpCommand(_commandsExecutor.GetRegisteredCommands));
         }
 
         [Test]
-        public async Task TestRequestToMyPublicGitlab()
+        public async Task RequestCommitsInLast1000Days(
+            [Values(new[] {"commits", "0", "1000"}, new[] {"commits", "24000"})]
+            string[] args)
         {
             var projectNamesFromConfig = new[]
             {
@@ -30,14 +31,14 @@ namespace GitlabTask.Tests
                 new FakeConfig(projectNamesFromConfig),
                 new GitlabCommitsGetter(new JsonConverter())));
 
-            await _commandsExecutor.Execute(new[] {"commits", "0", "1000"});
+            await _commandsExecutor.Execute(args);
 
             var reader = new StringReader(_writer.ToString());
 
-            const string expected = "MyTestProject:\r\n" +
-                                    "- Initial template creation\r\n" +
-                                    "- Update README.md\r\n" +
-                                    "\r\n";
+            var expected = "MyTestProject:\r\n" +
+                           "- Initial template creation\r\n" +
+                           "- Update README.md\r\n" +
+                           "\r\n";
 
             var actual = await reader.ReadToEndAsync();
             Assert.AreEqual(expected, actual);

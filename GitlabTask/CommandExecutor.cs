@@ -10,7 +10,7 @@ namespace GitlabTask
 {
     public class CommandsExecutor : ICommandsExecutor
     {
-        private readonly List<Command> _commands = new List<Command>();
+        public readonly List<Command> Commands = new List<Command>();
 
         private readonly TextWriter _writer;
 
@@ -21,24 +21,14 @@ namespace GitlabTask
 
         public void RegisterCommand(Command command)
         {
-            _commands.Add(command);
-        }
-
-        public List<Command> GetRegisteredCommands()
-        {
-            return _commands;
-        }
-
-        private Command FindCommandByName(string name)
-        {
-            return _commands.FirstOrDefault(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
+            Commands.Add(command);
         }
 
         public async Task Execute(string[] args)
         {
-            if (args[0].Length == 0)
+            if (args.Length == 0)
             {
-                Console.WriteLine("Введите команду <command> первым аргументом командной строки");
+                await _writer.WriteLineAsync("Введите команду <command> первым аргументом командной строки");
                 return;
             }
 
@@ -49,8 +39,13 @@ namespace GitlabTask
                 _writer.WriteLine("Неизвестная команда {0}", commandName);
             else
             {
-               await cmd.Execute(args[1..], _writer);
+                await cmd.Execute(args[1..], _writer);
             }
+        }
+
+        private Command FindCommandByName(string name)
+        {
+            return Commands.FirstOrDefault(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

@@ -19,8 +19,8 @@ namespace GitlabTask
             var commandsExecutor = new CommandsExecutor(writer);
             var config = new Config();
             commandsExecutor.RegisterCommand(new CommitsCommand(config, new GitlabCommitsGetter(new JsonConverter())));
-            commandsExecutor.RegisterCommand(new HelpCommand(commandsExecutor.GetRegisteredCommands));
-            commandsExecutor.RegisterCommand(new TrackedProjectsCommand(config));
+            commandsExecutor.RegisterCommand(new HelpCommand(() => commandsExecutor.Commands));
+            commandsExecutor.RegisterCommand(new ProjectsCommand(config));
 
             return commandsExecutor;
         }

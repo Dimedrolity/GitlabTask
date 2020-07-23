@@ -5,11 +5,11 @@ using GitlabTask.Interfaces;
 
 namespace GitlabTask.Commands
 {
-    public class TrackedProjectsCommand : Command
+    public class ProjectsCommand : Command
     {
         private readonly IConfig _config;
 
-        public TrackedProjectsCommand(IConfig config)
+        public ProjectsCommand(IConfig config)
             : base("projects", "Показывает список отслеживаемых проектов (находится в конфиге appsettings.json)\n")
         {
             _config = config;
@@ -19,7 +19,7 @@ namespace GitlabTask.Commands
         {
             var projectNames = _config.GetProjects().Select(project => project.Name);
             await writer.WriteAsync("Список отслеживаемых проектов (находится в конфиге appsettings.json):\r\n" +
-                                    $"- {string.Join("\r\n- ", projectNames)}\n");
+                                    $"- {string.Join("\r\n- ", projectNames)}\r\n");
         }
     }
 }

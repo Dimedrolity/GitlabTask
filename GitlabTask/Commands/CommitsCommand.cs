@@ -24,31 +24,41 @@ namespace GitlabTask.Commands
 
         public override async Task Execute(string[] args, TextWriter writer)
         {
+            var sinceTimestamp = GetTimestampAffectedByArguments(args);
+            await WriteProjectsToWriter(writer, sinceTimestamp);
+        }
+        
+        private static DateTimeOffset GetTimestampAffectedByArguments(string[] args)
+        {
+            var now = DateTimeOffset.Now;
+
+            switch (args.Length)
+            {
+                case 1:
+                {
+                    var hours = int.Parse(args[0]);
+                    return now.AddHours(hours * -1);
+                }
+                case 2:
+                {
+                    var days = int.Parse(args[1]);
+                    return now.AddDays(days * -1);
+                }
+                default:
+                {
+                    var yesterday = now.AddDays(-1);
+                    return yesterday;
+                }
+            }
+        }
+        
+        private async Task WriteProjectsToWriter(TextWriter writer, DateTimeOffset sinceTimestamp)
+        {
             var projectsFromConfig = _config.GetProjects();
-
-            var date = DateTimeOffset.Now;
-
-            if (args.Length == 0)
-            {
-                var yesterday = DateTimeOffset.Now.AddDays(-1);
-                date = yesterday; //default
-            }
-
-            if (args.Length > 0)
-            {
-                var hours = int.Parse(args[0]);
-                date = date.AddHours(hours * -1);
-            }
-
-            if (args.Length > 1)
-            {
-                var days = int.Parse(args[1]);
-                date = date.AddDays(days * -1);
-            }
 
             foreach (var project in projectsFromConfig)
             {
-                var commits = await _commitsGetter.GetCommitsOfProject(project.Id, date);
+                var commits = await _commitsGetter.GetCommitsOfProject(project.Id, sinceTimestamp);
                 var commitsList = commits.ToList();
                 commitsList.Sort((c1, c2) => string.CompareOrdinal(c1.CreatedAt, c2.CreatedAt));
 
