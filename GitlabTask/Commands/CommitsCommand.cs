@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GitlabTask.Interfaces;
 
-namespace GitlabTask
+namespace GitlabTask.Commands
 {
     public class CommitsCommand : Command
     {
@@ -12,7 +12,7 @@ namespace GitlabTask
         private readonly ICommitsGetter _commitsGetter;
 
         public CommitsCommand(IConfig config, ICommitsGetter commitsGetter)
-            : base("commits", "commits <h> <d> <detailed>.\n" +
+            : base("commits", "commits <h> <d>.\n" +
                               "Показывает список коммитов в хронологическом порядке.\n" +
                               "По умолчанию выводятся коммиты за последний день.\n" +
                               "Это можно изменить, передав аргументы <h> и/или <d>, " +
@@ -54,8 +54,7 @@ namespace GitlabTask
 
                 project.Commits = commitsList.ToArray();
 
-                await writer.WriteLineAsync(project.ToString());
-                await writer.WriteLineAsync();
+                await writer.WriteLineAsync(project + "\r\n");
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 
-namespace GitlabTask
+namespace GitlabTask.Commands
 {
     public abstract class Command
     {

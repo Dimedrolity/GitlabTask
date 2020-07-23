@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using GitlabTask.Commands;
 using NUnit.Framework;
 
 namespace GitlabTask.Tests
@@ -14,7 +15,7 @@ namespace GitlabTask.Tests
         {
             _writer = new StringWriter();
             _commandsExecutor = new CommandsExecutor(_writer);
-            _commandsExecutor.RegisterCommand(new HelpCommand(_commandsExecutor.GetRegisteredCommandNames));
+            _commandsExecutor.RegisterCommand(new HelpCommand(_commandsExecutor.GetRegisteredCommands));
         }
 
         [Test]

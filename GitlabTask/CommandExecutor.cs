@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using GitlabTask.Commands;
 using GitlabTask.Interfaces;
 
 namespace GitlabTask
@@ -23,9 +24,9 @@ namespace GitlabTask
             _commands.Add(command);
         }
 
-        public string[] GetRegisteredCommandNames()
+        public List<Command> GetRegisteredCommands()
         {
-            return _commands.Select(c => c.Name).ToArray();
+            return _commands;
         }
 
         private Command FindCommandByName(string name)

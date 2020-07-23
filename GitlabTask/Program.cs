@@ -1,38 +1,40 @@
 ﻿using System;
+using System.Threading.Tasks;
+using GitlabTask.Commands;
 using GitlabTask.Interfaces;
 
 namespace GitlabTask
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main()
         {
             var executor = CreateExecutor();
-            if (args.Length > 0)
-                executor.Execute(args);
-            else
-                RunInteractiveMode(executor);
+            await RunInteractiveMode(executor);
         }
 
         private static ICommandsExecutor CreateExecutor()
         {
             var writer = Console.Out;
             var commandsExecutor = new CommandsExecutor(writer);
-            commandsExecutor.RegisterCommand(
-                new CommitsCommand(new Config(), new GitlabCommitsGetter(new JsonConverter())));
-            commandsExecutor.RegisterCommand(new HelpCommand(commandsExecutor.GetRegisteredCommandNames));
+            var config = new Config();
+            commandsExecutor.RegisterCommand(new CommitsCommand(config, new GitlabCommitsGetter(new JsonConverter())));
+            commandsExecutor.RegisterCommand(new HelpCommand(commandsExecutor.GetRegisteredCommands));
+            commandsExecutor.RegisterCommand(new TrackedProjectsCommand(config));
 
             return commandsExecutor;
         }
 
-        public static void RunInteractiveMode(ICommandsExecutor executor)
+        public static async Task RunInteractiveMode(ICommandsExecutor executor)
         {
+            Console.WriteLine("\nВведите команду, например help");
             while (true)
             {
                 var line = Console.ReadLine();
                 if (line == null || line == "exit")
                     return;
-                executor.Execute(line.Split(' '));
+                await executor.Execute(line.Split(' '));
+                Console.WriteLine();
             }
         }
     }

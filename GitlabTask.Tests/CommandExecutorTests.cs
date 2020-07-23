@@ -1,4 +1,5 @@
 using System.IO;
+using GitlabTask.Commands;
 using NUnit.Framework;
 
 namespace GitlabTask.Tests
@@ -36,7 +37,7 @@ namespace GitlabTask.Tests
                     "324"),
             };
             priceServiceProject.Commits = priceServiceCommits;
-            
+
             var projectsFromConfig = new[] {taxSeeProject, priceServiceProject};
 
             _commandsExecutor.RegisterCommand(new CommitsCommand(
@@ -56,22 +57,6 @@ namespace GitlabTask.Tests
                                     "- Рефакторинг обращений к графхоперу\r\n" +
                                     "- Фикс ошибки если адресный сервис не возвращает zoneId по координатам\r\n" +
                                     "\r\n";
-            var actual = reader.ReadToEnd();
-            Assert.AreEqual(expected, actual);
-        }
-
-        [Test]
-        public void HelpCommand()
-        {
-            _commandsExecutor.RegisterCommand(new HelpCommand(_commandsExecutor.GetRegisteredCommandNames));
-            _commandsExecutor.RegisterCommand(new CommitsCommand(null, null));
-
-            _commandsExecutor.Execute(new[] {"help"});
-
-            var reader = new StringReader(_writer.ToString());
-
-            const string expected = "help commits";
-
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
         }
