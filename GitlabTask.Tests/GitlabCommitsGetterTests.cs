@@ -20,21 +20,24 @@ namespace GitlabTask.Tests
         [Test]
         public async Task TestRequestToMyPublicGitlab()
         {
-            var projectNamesFromConfig = new[] {"20095396"};
+            var projectNamesFromConfig = new[]
+            {
+                new GitlabProject("MyTestProject", "20095396")
+            };
 
             _commandsExecutor.RegisterCommand(new CommitsCommand(
                 new FakeConfig(projectNamesFromConfig),
                 new GitlabCommitsGetter(new JsonConverter())));
-            
+
             await _commandsExecutor.Execute(new[] {"commits", "0", "1000"});
 
             var reader = new StringReader(_writer.ToString());
 
-            const string expected = "20095396:\r\n" +
+            const string expected = "MyTestProject:\r\n" +
                                     "- Initial template creation\r\n" +
                                     "- Update README.md\r\n" +
                                     "\r\n";
-            
+
             var actual = await reader.ReadToEndAsync();
             Assert.AreEqual(expected, actual);
         }

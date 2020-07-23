@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 
@@ -19,28 +18,30 @@ namespace GitlabTask.Tests
         [Test]
         public void CommitsCommandWithoutArguments()
         {
-            var projectNamesFromConfig = new[] {"TaxSee Workstation", "PriceService"};
+            var taxSeeProject = new GitlabProject("TaxSee Workstation", "1");
             var taxSeeCommits = new[]
             {
-                new Commit("Удален отладочный код", "mmm", "aaa", "324"),
-                new Commit("Проверка подозрительных заказов", "mmm", "aaa", "324"),
-                new Commit("Добавлен флажок \"Клиент просит не звонить\"", "mmm", "aaa", "324"),
+                new GitlabCommit("Удален отладочный код", "mmm", "aaa", "324"),
+                new GitlabCommit("Проверка подозрительных заказов", "mmm", "aaa", "324"),
+                new GitlabCommit("Добавлен флажок \"Клиент просит не звонить\"", "mmm", "aaa", "324"),
             };
+            taxSeeProject.Commits = taxSeeCommits;
+
+            var priceServiceProject = new GitlabProject("PriceService", "2");
             var priceServiceCommits = new[]
             {
-                new Commit("Исправление ошибок округления", "mmm", "aaa", "324"),
-                new Commit("Рефакторинг обращений к графхоперу, реализация недостающих параметров", "mmm", "aaa",
+                new GitlabCommit("Исправление ошибок округления", "mmm", "aaa", "324"),
+                new GitlabCommit("Рефакторинг обращений к графхоперу", "mmm", "aaa", "324"),
+                new GitlabCommit("Фикс ошибки если адресный сервис не возвращает zoneId по координатам", "mmm", "aaa",
                     "324"),
-                new Commit("Фикс ошибки если адресный сервис не возвращает zoneId по координатам", "mmm", "aaa", "324"),
             };
-            var projectIdToCommits = new Dictionary<string, Commit[]>
-            {
-                {projectNamesFromConfig[0], taxSeeCommits},
-                {projectNamesFromConfig[1], priceServiceCommits}
-            };
+            priceServiceProject.Commits = priceServiceCommits;
+            
+            var projectsFromConfig = new[] {taxSeeProject, priceServiceProject};
+
             _commandsExecutor.RegisterCommand(new CommitsCommand(
-                new FakeConfig(projectNamesFromConfig),
-                new FakeCommitsGetter(projectIdToCommits)));
+                new FakeConfig(projectsFromConfig),
+                new FakeCommitsGetter(projectsFromConfig)));
             _commandsExecutor.Execute(new[] {"commits"});
 
             var reader = new StringReader(_writer.ToString());
@@ -52,7 +53,7 @@ namespace GitlabTask.Tests
                                     "\r\n" +
                                     "PriceService:\r\n" +
                                     "- Исправление ошибок округления\r\n" +
-                                    "- Рефакторинг обращений к графхоперу, реализация недостающих параметров\r\n" +
+                                    "- Рефакторинг обращений к графхоперу\r\n" +
                                     "- Фикс ошибки если адресный сервис не возвращает zoneId по координатам\r\n" +
                                     "\r\n";
             var actual = reader.ReadToEnd();
@@ -63,15 +64,14 @@ namespace GitlabTask.Tests
         public void HelpCommand()
         {
             _commandsExecutor.RegisterCommand(new HelpCommand(_commandsExecutor.GetRegisteredCommandNames));
-            _commandsExecutor.RegisterCommand(new HelpCommand(_commandsExecutor.GetRegisteredCommandNames));
-            _commandsExecutor.RegisterCommand(new HelpCommand(_commandsExecutor.GetRegisteredCommandNames));
+            _commandsExecutor.RegisterCommand(new CommitsCommand(null, null));
 
             _commandsExecutor.Execute(new[] {"help"});
-            
+
             var reader = new StringReader(_writer.ToString());
 
-            const string expected = "help help help";
-            
+            const string expected = "help commits";
+
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
         }

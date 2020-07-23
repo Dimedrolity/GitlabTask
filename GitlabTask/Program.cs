@@ -1,4 +1,5 @@
 ﻿using System;
+using GitlabTask.Interfaces;
 
 namespace GitlabTask
 {

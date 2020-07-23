@@ -2,9 +2,10 @@
 
 namespace GitlabTask
 {
-    public class Commit
+    public class GitlabCommit
     {
-        [JsonProperty(PropertyName = "title")] public string Title { get; }
+        [JsonProperty(PropertyName = "title")] 
+        public string Title { get; }
 
         [JsonProperty(PropertyName = "message")]
         public string Message { get; }
@@ -15,7 +16,7 @@ namespace GitlabTask
         [JsonProperty(PropertyName = "author_name")]
         public string AuthorName { get; }
 
-        public Commit(string title, string message, string authorName, string createdAt)
+        public GitlabCommit(string title, string message, string authorName, string createdAt)
         {
             Title = title;
             Message = message;

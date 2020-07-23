@@ -1,17 +1,19 @@
-﻿namespace GitlabTask.Tests
+﻿using GitlabTask.Interfaces;
+
+namespace GitlabTask.Tests
 {
     public class FakeConfig : IConfig
     {
-        private readonly string[] _projectNames;
+        private readonly GitlabProject[] _projects;
 
-        public FakeConfig(string[] projectNames)
+        public FakeConfig(GitlabProject[] projects)
         {
-            _projectNames = projectNames;
+            _projects = projects;
         }
 
-        public string[] GetProjectNames()
+        public GitlabProject[] GetProjects()
         {
-            return _projectNames;
+            return _projects;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace GitlabTask
+namespace GitlabTask.Interfaces
 {
     public interface ICommandsExecutor
     {

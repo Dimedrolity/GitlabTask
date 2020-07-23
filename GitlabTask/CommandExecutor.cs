@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using GitlabTask.Interfaces;
 
 namespace GitlabTask
 {
@@ -47,9 +48,7 @@ namespace GitlabTask
                 _writer.WriteLine("Sorry. Unknown command {0}", commandName);
             else
             {
-                // var restArgs = new Span<string>(args, 1, int.MaxValue);
-
-                await cmd.Execute(args[1..], _writer);
+               await cmd.Execute(args[1..], _writer);
             }
         }
     }

@@ -1,12 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using GitlabTask.Interfaces;
+using Newtonsoft.Json;
 
 namespace GitlabTask
 {
     public class JsonConverter : IJsonConverter
     {
-        public Commit[] ConvertJsonToCommits(string json)
+        public GitlabCommit[] ConvertJsonToCommits(string json)
         {
-            return JsonConvert.DeserializeObject<Commit[]>(json);
+            return JsonConvert.DeserializeObject<GitlabCommit[]>(json);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using GitlabTask.Interfaces;
 
 namespace GitlabTask
 {
@@ -23,7 +24,7 @@ namespace GitlabTask
 
         public override async Task Execute(string[] args, TextWriter writer)
         {
-            var projectNamesFromConfig = _config.GetProjectNames();
+            var projectsFromConfig = _config.GetProjects();
 
             var date = DateTimeOffset.Now;
 
@@ -45,19 +46,15 @@ namespace GitlabTask
                 date = date.AddDays(days * -1);
             }
 
-            var detailed = args.Length > 2;
-
-            foreach (var projectName in projectNamesFromConfig)
+            foreach (var project in projectsFromConfig)
             {
-                var commits = await _commitsGetter.GetCommitsOfProject(projectName, date);
-                var rep = new Repository(projectName, commits);
-
+                var commits = await _commitsGetter.GetCommitsOfProject(project.Id, date);
                 var commitsList = commits.ToList();
                 commitsList.Sort((c1, c2) => string.CompareOrdinal(c1.CreatedAt, c2.CreatedAt));
 
-                //TODO if detailed выводить - время коммитов, автора, полный текст коммитов.
-                await writer.WriteLineAsync($"{rep.Name}:" +
-                                            "\r\n- " + string.Join("\r\n- ", commitsList.Select(c => c.Title)));
+                project.Commits = commitsList.ToArray();
+
+                await writer.WriteLineAsync(project.ToString());
                 await writer.WriteLineAsync();
             }
         }
