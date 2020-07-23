@@ -1,14 +1,25 @@
-﻿using System;
+﻿using System.Linq;
 using GitlabTask.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace GitlabTask
 {
     public class Config : IConfig
     {
+        private readonly IConfiguration _configuration;
+
+        public Config()
+        {
+            _configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+        }
+
         public GitlabProject[] GetProjects()
         {
-            //TODO брать из настоящего конфига
-            throw new NotImplementedException();
+            return _configuration.GetSection("projects").GetChildren()
+                .Select(projectFromJson => new GitlabProject(projectFromJson["name"], projectFromJson["projectId"]))
+                .ToArray();
         }
     }
 }

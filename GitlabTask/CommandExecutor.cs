@@ -37,7 +37,7 @@ namespace GitlabTask
         {
             if (args[0].Length == 0)
             {
-                Console.WriteLine("Please specify <command> as the first command line argument");
+                Console.WriteLine("Введите команду <command> первым аргументом командной строки");
                 return;
             }
 
@@ -45,7 +45,7 @@ namespace GitlabTask
 
             var cmd = FindCommandByName(commandName);
             if (cmd == null)
-                _writer.WriteLine("Sorry. Unknown command {0}", commandName);
+                _writer.WriteLine("Неизвестная команда {0}", commandName);
             else
             {
                await cmd.Execute(args[1..], _writer);
