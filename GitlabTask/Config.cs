@@ -16,6 +16,16 @@ namespace GitlabTask
                 .Build();
         }
 
+        public string GetGitlabDomainName()
+        {
+            return _configuration.GetSection("gitlabDomainName").Value;
+        }
+
+        public string GetPersonalAccessToken()
+        {
+            return _configuration.GetSection("personalAccessToken").Value;
+        }
+
         public IEnumerable<GitlabProject> GetProjects()
         {
             return _configuration.GetSection("projects").GetChildren()

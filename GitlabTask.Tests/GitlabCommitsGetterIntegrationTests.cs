@@ -27,9 +27,9 @@ namespace GitlabTask.Tests
                 new GitlabProject("MyTestProject", "20095396")
             };
 
-            _commandsExecutor.RegisterCommand(new CommitsCommand(
-                new ConfigStub(projectNamesFromConfig),
-                new GitlabCommitsGetter(new JsonConverter())));
+            var config = new ConfigStub(projectNamesFromConfig);
+            _commandsExecutor.RegisterCommand(new CommitsCommand(config,
+                new GitlabCommitsGetter(new JsonConverter(), config)));
 
             await _commandsExecutor.Execute(args);
 

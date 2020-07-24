@@ -5,11 +5,21 @@ namespace GitlabTask.Tests
 {
     public class ConfigStub : IConfig
     {
-        private readonly GitlabProject[] _projects;
+        private readonly IEnumerable<GitlabProject> _projects;
 
-        public ConfigStub(GitlabProject[] projects)
+        public ConfigStub(IEnumerable<GitlabProject> projects)
         {
             _projects = projects;
+        }
+
+        public string GetGitlabDomainName()
+        {
+            return "gitlab.com";    //официальный гитлаб
+        }
+
+        public string GetPersonalAccessToken()
+        {
+            return null;    //без токена
         }
 
         public IEnumerable<GitlabProject> GetProjects()

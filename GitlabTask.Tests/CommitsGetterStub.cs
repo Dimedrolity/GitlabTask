@@ -8,9 +8,9 @@ namespace GitlabTask.Tests
 {
     public class CommitsGetterStub : ICommitsGetter
     {
-        private readonly GitlabProject[] _projects;
+        private readonly IEnumerable<GitlabProject> _projects;
 
-        public CommitsGetterStub(GitlabProject[] projects)
+        public CommitsGetterStub(IEnumerable<GitlabProject> projects)
         {
             _projects = projects;
         }
