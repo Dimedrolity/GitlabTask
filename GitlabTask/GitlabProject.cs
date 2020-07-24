@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace GitlabTask
 {
@@ -6,7 +7,7 @@ namespace GitlabTask
     {
         public string Name { get; }
         public string Id { get; }
-        public GitlabCommit[] Commits { get; set; }
+        public IEnumerable<GitlabCommit> Commits { get; set; }
 
         public GitlabProject(string name, string id)
         {

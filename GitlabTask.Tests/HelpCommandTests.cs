@@ -20,8 +20,8 @@ namespace GitlabTask.Tests
         [Test]
         public void HelpCommandWithoutArguments()
         {
-            _commandsExecutor.RegisterCommand(new CommitsCommand(null, null));
-            _commandsExecutor.RegisterCommand(new ProjectsCommand(null));
+            _commandsExecutor.RegisterCommand(new CommitsCommand(new ConfigStub(null), new CommitsGetterStub(null)));
+            _commandsExecutor.RegisterCommand(new ProjectsCommand(new ConfigStub(null)));
 
             _commandsExecutor.Execute(new[] {"help"});
 
@@ -56,7 +56,7 @@ namespace GitlabTask.Tests
         [Test]
         public void HelpCommandForCommitsCommand()
         {
-            _commandsExecutor.RegisterCommand(new CommitsCommand(null, null));
+            _commandsExecutor.RegisterCommand(new CommitsCommand(new ConfigStub(null), new CommitsGetterStub(null)));
 
             _commandsExecutor.Execute(new[] {"help", "commits"});
 

@@ -1,7 +1,9 @@
-﻿namespace GitlabTask.Interfaces
+﻿using System.Collections.Generic;
+
+namespace GitlabTask.Interfaces
 {
     public interface IJsonConverter
     {
-        public GitlabCommit[] ConvertJsonToCommits(string json);
+        public IEnumerable<GitlabCommit> ConvertJsonToCommits(string json);
     }
 }

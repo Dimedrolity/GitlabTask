@@ -28,7 +28,7 @@ namespace GitlabTask.Tests
             };
 
             _commandsExecutor.RegisterCommand(new CommitsCommand(
-                new FakeConfig(projectNamesFromConfig),
+                new ConfigStub(projectNamesFromConfig),
                 new GitlabCommitsGetter(new JsonConverter())));
 
             await _commandsExecutor.Execute(args);

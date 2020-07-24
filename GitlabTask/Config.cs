@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using GitlabTask.Interfaces;
 using Microsoft.Extensions.Configuration;
 
@@ -15,11 +16,16 @@ namespace GitlabTask
                 .Build();
         }
 
-        public GitlabProject[] GetProjects()
+        public IEnumerable<GitlabProject> GetProjects()
         {
             return _configuration.GetSection("projects").GetChildren()
-                .Select(projectFromJson => new GitlabProject(projectFromJson["name"], projectFromJson["projectId"]))
-                .ToArray();
+                .Select(projectFromJson => new GitlabProject(projectFromJson["name"], projectFromJson["projectId"]));
+        }
+
+        public IEnumerable<string> GetPatternsOfExcludedTitle()
+        {
+            return _configuration.GetSection("patternOfExcludedTitle").GetChildren()
+                .Select(pattern => pattern.Value);
         }
     }
 }

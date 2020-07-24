@@ -1,7 +1,10 @@
-﻿namespace GitlabTask.Interfaces
+﻿using System.Collections.Generic;
+
+namespace GitlabTask.Interfaces
 {
     public interface IConfig
     {
-        public GitlabProject[] GetProjects();
+        public IEnumerable<GitlabProject> GetProjects();
+        public IEnumerable<string> GetPatternsOfExcludedTitle();
     }
 }

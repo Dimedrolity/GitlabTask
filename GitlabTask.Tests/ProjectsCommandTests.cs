@@ -25,7 +25,7 @@ namespace GitlabTask.Tests
             var projectsFromConfig = new[] {apnsProject, gitlabProject};
 
             _commandsExecutor.RegisterCommand(new ProjectsCommand(
-                new FakeConfig(projectsFromConfig)));
+                new ConfigStub(projectsFromConfig)));
             _commandsExecutor.Execute(new[] {"projects"});
 
             var reader = new StringReader(_writer.ToString());

@@ -1,19 +1,25 @@
-﻿using GitlabTask.Interfaces;
+﻿using System.Collections.Generic;
+using GitlabTask.Interfaces;
 
 namespace GitlabTask.Tests
 {
-    public class FakeConfig : IConfig
+    public class ConfigStub : IConfig
     {
         private readonly GitlabProject[] _projects;
 
-        public FakeConfig(GitlabProject[] projects)
+        public ConfigStub(GitlabProject[] projects)
         {
             _projects = projects;
         }
 
-        public GitlabProject[] GetProjects()
+        public IEnumerable<GitlabProject> GetProjects()
         {
             return _projects;
+        }
+
+        public IEnumerable<string> GetPatternsOfExcludedTitle()
+        {
+            return new[] {"人+"};    //в коммитах точно не будет китайского иероглифа
         }
     }
 }
