@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using GitlabTask.Commands;
 using NUnit.Framework;
@@ -19,7 +20,7 @@ namespace GitlabTask.Tests
 
         [Test]
         public async Task RequestCommitsInLast1000Days(
-            [Values(new[] {"commits", "0", "1000"}, new[] {"commits", "24000"})]
+            [Values(new[] {"d", "1000"}, new[] {"h", "24000"})]
             string[] args)
         {
             var projectNamesFromConfig = new[]
@@ -31,7 +32,8 @@ namespace GitlabTask.Tests
             _commandsExecutor.RegisterCommand(new CommitsCommand(config,
                 new GitlabCommitsGetter(new JsonConverter(), config)));
 
-            await _commandsExecutor.Execute(args);
+            await _commandsExecutor.Execute("commits",
+                new Dictionary<string, string> {{args[0], args[1]}});
 
             var reader = new StringReader(_writer.ToString());
 

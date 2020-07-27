@@ -16,11 +16,11 @@ namespace GitlabTask.Commands
         private readonly IEnumerable<string> _patternsOfExcludedTitle;
 
         public CommitsCommand(IConfig config, ICommitsGetter commitsGetter)
-            : base("commits", "commits <h> <d>.\n" +
-                              "Показывает список коммитов в хронологическом порядке.\n" +
+            : base("commits", "Показывает список коммитов в хронологическом порядке.\n" +
                               "По умолчанию выводятся коммиты за последний день.\n" +
-                              "Это можно изменить, передав аргументы <h> и/или <d>, " +
-                              "тогда список будет состоять из коммитов за последние <h> часов и <d> дней.\n")
+                              "Это можно изменить, передав аргументы h:<число> и/или d:<число>, " +
+                              "тогда список будет состоять из коммитов за последние h часов и d дней.\n" +
+                              "Например, command:commits h:3 d:1, коммиты за последние 1 день и 3 часа")
         {
             _commitsGetter = commitsGetter;
 
@@ -28,34 +28,36 @@ namespace GitlabTask.Commands
             _patternsOfExcludedTitle = config.GetPatternsOfExcludedTitle();
         }
 
-        public override async Task Execute(string[] args, TextWriter writer)
+        public override async Task Execute(Dictionary<string, string> args, TextWriter writer)
         {
             var sinceTimestamp = GetTimestampAffectedByArguments(args);
             await WriteProjectsToWriter(writer, sinceTimestamp);
         }
 
-        private static DateTimeOffset GetTimestampAffectedByArguments(string[] args)
+        private static DateTimeOffset GetTimestampAffectedByArguments(IReadOnlyDictionary<string, string> args)
         {
             var now = DateTimeOffset.Now;
+            var date = now;
 
-            switch (args.Length)
+            if (args != null && (args.ContainsKey("h") || args.ContainsKey("d")))
             {
-                case 1:
+                if (args.ContainsKey("h"))
                 {
-                    var hours = int.Parse(args[0]);
-                    return now.AddHours(hours * -1);
+                    var hours = int.Parse(args["h"]);
+                    date = date.AddHours(hours * -1);
                 }
-                case 2:
+
+                if (args.ContainsKey("d"))
                 {
-                    var days = int.Parse(args[1]);
-                    return now.AddDays(days * -1);
+                    var days = int.Parse(args["d"]);
+                    date = date.AddDays(days * -1);
                 }
-                default:
-                {
-                    var yesterday = now.AddDays(-1);
-                    return yesterday;
-                }
+
+                return date;
             }
+
+            var yesterday = now.AddDays(-1);
+            return yesterday;
         }
 
         private async Task WriteProjectsToWriter(TextWriter writer, DateTimeOffset sinceTimestamp)

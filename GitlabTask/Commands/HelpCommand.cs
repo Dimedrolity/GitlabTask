@@ -10,30 +10,31 @@ namespace GitlabTask.Commands
     {
         private readonly Func<List<Command>> _getRegisteredCommands;
 
+        private readonly string _argumentNameForCommandDescription = "about";
+
         public HelpCommand(Func<List<Command>> getRegisteredCommands)
-            : base("help", "help <command>.\n" +
-                           "По умолчанию показывает список доступных команд.\n" +
-                           "При указании аргумента <command> выводит подробное описание команды.\n")
+            : base("help", "По умолчанию показывает список доступных команд.\n" +
+                           "При указании аргумента 'about:<command>' выводит подробное описание команды.\n")
         {
             _getRegisteredCommands = getRegisteredCommands;
         }
 
-        public override async Task Execute(string[] args, TextWriter writer)
+        public override async Task Execute(Dictionary<string, string> args, TextWriter writer)
         {
             var commands = _getRegisteredCommands();
-            if (args.Length == 0)
+            if (args == null || args.Count == 0)
             {
                 var commandNames = commands.Select(c => c.Name);
                 await writer.WriteAsync("Список доступных команд:\r\n" +
-                                        $"- {string.Join("\r\n- ", commandNames)}\r\n" +
-                                        "Более подробная информация -> help <command>\n");
+                                        $"- command:{string.Join("\r\n- command:", commandNames)}\r\n" +
+                                        "Более подробная информация -> 'command:help about:<command>'\n");
                 return;
             }
 
-            var commandName = args[0];
+            var commandName = args[_argumentNameForCommandDescription];
             var command = commands
                 .FirstOrDefault(c => string.Equals(c.Name, commandName, StringComparison.OrdinalIgnoreCase));
-            
+
             if (command != null)
                 await writer.WriteAsync($"Описание команды {commandName}:\r\n" + $"- {command.Description}");
             else

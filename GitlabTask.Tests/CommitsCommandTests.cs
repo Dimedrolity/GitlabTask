@@ -33,7 +33,7 @@ namespace GitlabTask.Tests
             _commandsExecutor.RegisterCommand(new CommitsCommand(
                 new ConfigStub(projectsFromConfig),
                 new CommitsGetterStub(projectsFromConfig)));
-            _commandsExecutor.Execute(new[] {"commits"});
+            _commandsExecutor.Execute("commits");
 
             var reader = new StringReader(_writer.ToString());
 

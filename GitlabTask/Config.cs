@@ -9,11 +9,9 @@ namespace GitlabTask
     {
         private readonly IConfiguration _configuration;
 
-        public Config()
+        public Config(IConfiguration configuration)
         {
-            _configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", false, true)
-                .Build();
+            _configuration = configuration;
         }
 
         public string GetGitlabDomainName()

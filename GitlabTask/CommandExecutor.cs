@@ -24,22 +24,14 @@ namespace GitlabTask
             Commands.Add(command);
         }
 
-        public async Task Execute(string[] args)
+        public async Task Execute(string commandName, Dictionary<string, string> args = null)
         {
-            if (args.Length == 0)
-            {
-                await _writer.WriteLineAsync("Введите команду <command> первым аргументом командной строки");
-                return;
-            }
-
-            var commandName = args[0];
-
             var cmd = FindCommandByName(commandName);
             if (cmd == null)
                 _writer.WriteLine("Неизвестная команда {0}", commandName);
             else
             {
-                await cmd.Execute(args[1..], _writer);
+                await cmd.Execute(args, _writer);
             }
         }
 

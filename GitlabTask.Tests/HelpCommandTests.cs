@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using GitlabTask.Commands;
 using NUnit.Framework;
 
@@ -23,15 +24,15 @@ namespace GitlabTask.Tests
             _commandsExecutor.RegisterCommand(new CommitsCommand(new ConfigStub(null), new CommitsGetterStub(null)));
             _commandsExecutor.RegisterCommand(new ProjectsCommand(new ConfigStub(null)));
 
-            _commandsExecutor.Execute(new[] {"help"});
+            _commandsExecutor.Execute("help");
 
             var reader = new StringReader(_writer.ToString());
 
             var expected = "Список доступных команд:\r\n" +
-                           "- help\r\n" +
-                           "- commits\r\n" +
-                           "- projects\r\n" +
-                           "Более подробная информация -> help <command>\n";
+                           "- command:help\r\n" +
+                           "- command:commits\r\n" +
+                           "- command:projects\r\n" +
+                           "Более подробная информация -> 'command:help about:<command>'\n";
 
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
@@ -40,14 +41,14 @@ namespace GitlabTask.Tests
         [Test]
         public void HelpCommandForHelpCommand()
         {
-            _commandsExecutor.Execute(new[] {"help", "help"});
+            _commandsExecutor.Execute("help",
+                new Dictionary<string, string> {{"about", "help"}});
 
             var reader = new StringReader(_writer.ToString());
 
-            var expected = "Описание команды help:\r\n"
-                           + "- " + "help <command>.\n" +
-                           "По умолчанию показывает список доступных команд.\n" +
-                           "При указании аргумента <command> выводит подробное описание команды.\n";
+            var expected = "Описание команды help:\r\n" +
+                           "- " + "По умолчанию показывает список доступных команд.\n" +
+                           "При указании аргумента 'about:<command>' выводит подробное описание команды.\n";
 
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
@@ -58,16 +59,17 @@ namespace GitlabTask.Tests
         {
             _commandsExecutor.RegisterCommand(new CommitsCommand(new ConfigStub(null), new CommitsGetterStub(null)));
 
-            _commandsExecutor.Execute(new[] {"help", "commits"});
+            _commandsExecutor.Execute("help",
+                new Dictionary<string, string> {{"about", "commits"}});
 
             var reader = new StringReader(_writer.ToString());
 
-            var expected = "Описание команды commits:\r\n"
-                           + "- " + "commits <h> <d>.\n" +
-                           "Показывает список коммитов в хронологическом порядке.\n" +
+            var expected = "Описание команды commits:\r\n" +
+                           "- " + "Показывает список коммитов в хронологическом порядке.\n" +
                            "По умолчанию выводятся коммиты за последний день.\n" +
-                           "Это можно изменить, передав аргументы <h> и/или <d>, " +
-                           "тогда список будет состоять из коммитов за последние <h> часов и <d> дней.\n";
+                           "Это можно изменить, передав аргументы h:<число> и/или d:<число>, " +
+                           "тогда список будет состоять из коммитов за последние h часов и d дней.\n" +
+                           "Например, command:commits h:3 d:1, коммиты за последние 1 день и 3 часа";
 
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
@@ -78,13 +80,13 @@ namespace GitlabTask.Tests
         {
             _commandsExecutor.RegisterCommand(new ProjectsCommand(null));
 
-            _commandsExecutor.Execute(new[] {"help", "projects"});
+            _commandsExecutor.Execute("help",
+                new Dictionary<string, string> {{"about", "projects"}});
 
             var reader = new StringReader(_writer.ToString());
 
-            var expected = "Описание команды projects:\r\n"
-                           + "- " +
-                           "Показывает список отслеживаемых проектов (находится в конфиге appsettings.json)\n";
+            var expected = "Описание команды projects:\r\n" +
+                           "- " + "Показывает список отслеживаемых проектов (находится в конфиге appsettings.json)\n";
 
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
@@ -93,7 +95,8 @@ namespace GitlabTask.Tests
         [Test]
         public void HelpCommandForUnknownCommand()
         {
-            _commandsExecutor.Execute(new[] {"help", "unknown"});
+            _commandsExecutor.Execute("help",
+                new Dictionary<string, string> {{"about", "unknown"}});
 
             var reader = new StringReader(_writer.ToString());
 

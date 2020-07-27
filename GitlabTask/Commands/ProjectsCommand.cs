@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GitlabTask.Interfaces;
@@ -15,7 +16,7 @@ namespace GitlabTask.Commands
             _config = config;
         }
 
-        public override async Task Execute(string[] args, TextWriter writer)
+        public override async Task Execute(Dictionary<string, string> args, TextWriter writer)
         {
             var projectNames = _config.GetProjects().Select(project => project.Name);
             await writer.WriteAsync("Список отслеживаемых проектов (находится в конфиге appsettings.json):\r\n" +

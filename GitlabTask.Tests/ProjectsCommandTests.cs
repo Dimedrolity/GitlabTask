@@ -26,7 +26,8 @@ namespace GitlabTask.Tests
 
             _commandsExecutor.RegisterCommand(new ProjectsCommand(
                 new ConfigStub(projectsFromConfig)));
-            _commandsExecutor.Execute(new[] {"projects"});
+
+            _commandsExecutor.Execute("projects");
 
             var reader = new StringReader(_writer.ToString());
 
