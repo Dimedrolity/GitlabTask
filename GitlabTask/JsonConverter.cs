@@ -10,5 +10,10 @@ namespace GitlabTask
         {
             return JsonConvert.DeserializeObject<GitlabCommit[]>(json);
         }
+
+        public IEnumerable<GitlabBranch> ConvertJsonToBranches(string json)
+        {
+            return JsonConvert.DeserializeObject<GitlabBranch[]>(json);
+        }
     }
 }

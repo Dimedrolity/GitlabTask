@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using GitlabTask.Commands;
 using GitlabTask.Interfaces;
@@ -37,8 +38,11 @@ namespace GitlabTask
         private static ICommandsExecutor CreateExecutor(TextWriter writer, IConfig config)
         {
             var commandsExecutor = new CommandsExecutor(writer);
+            var httpClient = new HttpClient();
+            var jsonConverter = new JsonConverter();
             commandsExecutor.RegisterCommand(new CommitsCommand(config,
-                new GitlabCommitsGetter(new JsonConverter(), config)));
+                new GitlabCommitsGetter(jsonConverter, config, httpClient),
+                new GitlabBranchesGetter(jsonConverter, config, httpClient)));
             commandsExecutor.RegisterCommand(new HelpCommand(() => commandsExecutor.Commands));
             commandsExecutor.RegisterCommand(new ProjectsCommand(config));
             return commandsExecutor;

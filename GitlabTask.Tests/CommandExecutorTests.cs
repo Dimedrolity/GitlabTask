@@ -16,19 +16,6 @@ namespace GitlabTask.Tests
             _commandsExecutor = new CommandsExecutor(_writer);
         }
 
-        // [Test]
-        // public async Task ExecuteWithoutArguments()
-        // {
-        //     await _commandsExecutor.Execute(new string[0]);
-        //
-        //     var expected = "Введите команду <command> первым аргументом командной строки\r\n";
-        //
-        //     var reader = new StringReader(_writer.ToString());
-        //     var actual = await reader.ReadToEndAsync();
-        //
-        //     Assert.AreEqual(expected, actual);
-        // }
-
         [Test]
         public async Task ExecuteUnknownCommand()
         {

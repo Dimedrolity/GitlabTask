@@ -6,6 +6,7 @@ namespace GitlabTask.Interfaces
 {
     public interface ICommitsGetter
     {
-        public Task<IEnumerable<GitlabCommit>> GetCommitsOfProject(string projectId, DateTimeOffset since);
+        public Task<IEnumerable<GitlabCommit>> GetCommitsOfProject(string projectId, string branchName,
+            DateTimeOffset since);
     }
 }

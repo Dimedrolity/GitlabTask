@@ -8,5 +8,6 @@ namespace GitlabTask.Interfaces
         public string GetPersonalAccessToken();
         public IEnumerable<GitlabProject> GetProjects();
         public IEnumerable<string> GetPatternsOfExcludedTitle();
+        public string GetBranchesStringOfProject(string projectId);
     }
 }

@@ -14,12 +14,12 @@ namespace GitlabTask.Tests
 
         public string GetGitlabDomainName()
         {
-            return "gitlab.com";    //официальный гитлаб
+            return "gitlab.com"; //официальный гитлаб
         }
 
         public string GetPersonalAccessToken()
         {
-            return null;    //без токена
+            return null; //без токена
         }
 
         public IEnumerable<GitlabProject> GetProjects()
@@ -29,7 +29,16 @@ namespace GitlabTask.Tests
 
         public IEnumerable<string> GetPatternsOfExcludedTitle()
         {
-            return new[] {"人+"};    //в коммитах точно не будет китайского иероглифа
+            return new[] {"人+"}; //в коммитах точно не будет китайского иероглифа
+        }
+
+        public string GetBranchesStringOfProject(string projectId)
+        {
+            return projectId switch
+            {
+                "qwe_and_asd" => "qwe,asd",
+                _ => "all"
+            };
         }
     }
 }

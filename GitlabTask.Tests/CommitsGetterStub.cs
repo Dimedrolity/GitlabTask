@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using GitlabTask.Interfaces;
 
@@ -8,17 +7,17 @@ namespace GitlabTask.Tests
 {
     public class CommitsGetterStub : ICommitsGetter
     {
-        private readonly IEnumerable<GitlabProject> _projects;
+        private readonly IEnumerable<GitlabCommit> _commits;
 
-        public CommitsGetterStub(IEnumerable<GitlabProject> projects)
+        public CommitsGetterStub(IEnumerable<GitlabCommit> commits)
         {
-            _projects = projects;
+            _commits = commits;
         }
 
-        public Task<IEnumerable<GitlabCommit>> GetCommitsOfProject(string projectId, DateTimeOffset since)
+        public Task<IEnumerable<GitlabCommit>> GetCommitsOfProject(string projectId, string branchName,
+            DateTimeOffset since)
         {
-            var commits = _projects.FirstOrDefault(project => project.Id == projectId)?.Commits;
-            return Task.FromResult(commits);
+            return Task.FromResult(_commits);
         }
     }
 }

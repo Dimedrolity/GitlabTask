@@ -15,5 +15,10 @@ namespace GitlabTask
             Title = title;
             CreatedAt = createdAt;
         }
+
+        public override string ToString()
+        {
+            return Title;
+        }
     }
 }
