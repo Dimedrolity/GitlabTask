@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using Newtonsoft.Json;
 
 namespace GitlabTask
@@ -8,7 +8,7 @@ namespace GitlabTask
         [JsonProperty(PropertyName = "name")] 
         public string Name { get; }
 
-        public IEnumerable<GitlabCommit> Commits { get; set; }
+        public GitlabCommit[] Commits { get; set; }
 
         public GitlabBranch(string name)
         {
@@ -18,7 +18,7 @@ namespace GitlabTask
         public override string ToString()
         {
             return $"branch {Name}:" +
-                   "\r\n-- " + string.Join("\r\n-- ", Commits);
+                   "\r\n-- " + string.Join("\r\n-- ", Commits.Select(c => c.ToString()));
         }
     }
 }

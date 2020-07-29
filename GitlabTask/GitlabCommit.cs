@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace GitlabTask
 {
-    public class GitlabCommit
+    public class GitlabCommit : IComparable<GitlabCommit>
     {
         [JsonProperty(PropertyName = "title")] 
         public string Title { get; }
@@ -14,6 +15,11 @@ namespace GitlabTask
         {
             Title = title;
             CreatedAt = createdAt;
+        }
+        
+        public int CompareTo(GitlabCommit other)
+        {
+            return string.Compare(CreatedAt, other.CreatedAt, StringComparison.Ordinal);
         }
 
         public override string ToString()

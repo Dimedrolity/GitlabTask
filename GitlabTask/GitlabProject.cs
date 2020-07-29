@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 
 namespace GitlabTask
 {
@@ -6,7 +6,7 @@ namespace GitlabTask
     {
         public string Name { get; }
         public string Id { get; }
-        public IEnumerable<GitlabBranch> Branches { get; set; }
+        public GitlabBranch[] Branches { get; set; }
 
         public GitlabProject(string name, string id)
         {
@@ -17,7 +17,7 @@ namespace GitlabTask
         public override string ToString()
         {
             return $"{Name}:" +
-                   "\r\n- " + string.Join("\r\n- ", Branches);
+                   "\r\n- " + string.Join("\r\n- ", Branches.Select(b => b.ToString()));
         }
     }
 }

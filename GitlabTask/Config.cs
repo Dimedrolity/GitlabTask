@@ -36,7 +36,7 @@ namespace GitlabTask
                 .Select(pattern => pattern.Value);
         }
 
-        public string GetBranchesStringOfProject(string projectId)
+        public string GetBranchesOfProjectAsString(string projectId)
         {
             var project = _configuration.GetSection("projects").GetChildren()
                 .FirstOrDefault(proj => proj["Id"] == projectId);

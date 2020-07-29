@@ -32,7 +32,7 @@ namespace GitlabTask.Tests
             return new[] {"人+"}; //в коммитах точно не будет китайского иероглифа
         }
 
-        public string GetBranchesStringOfProject(string projectId)
+        public string GetBranchesOfProjectAsString(string projectId)
         {
             return projectId switch
             {

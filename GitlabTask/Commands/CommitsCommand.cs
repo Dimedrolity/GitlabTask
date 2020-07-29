@@ -13,8 +13,6 @@ namespace GitlabTask.Commands
         private readonly IConfig _config;
         private readonly ICommitsGetter _commitsGetter;
         private readonly IBranchesGetter _branchesGetter;
-
-        private readonly IEnumerable<GitlabProject> _projectsFromConfig;
         private readonly IEnumerable<string> _patternsOfExcludedTitle;
 
         public CommitsCommand(IConfig config, ICommitsGetter commitsGetter, IBranchesGetter branchesGetter)
@@ -28,102 +26,85 @@ namespace GitlabTask.Commands
             _commitsGetter = commitsGetter;
             _branchesGetter = branchesGetter;
 
-            _projectsFromConfig = config.GetProjects();
             _patternsOfExcludedTitle = config.GetPatternsOfExcludedTitle();
         }
 
         public override async Task Execute(Dictionary<string, string> args, TextWriter writer)
         {
+            var projects = _config.GetProjects().ToArray();
             var sinceTimestamp = GetTimestampAffectedByArguments(args);
 
             if (args != null && args.ContainsKey("branches"))
             {
-                var branchesArgument = args["branches"];
-                if (branchesArgument == "all")
+                var branchesFromCommandLine = args["branches"];
+                await GetBranchesViaCommandLineAndSetToProjectBranches(projects, branchesFromCommandLine);
+            }
+            else
+            {
+                await GetBranchesViaConfigAndSetToProjectBranches(projects);
+            }
+
+            await GetCommitsOfProjectBranchesAndSetToBranchCommits(projects, sinceTimestamp);
+            await WriteProjectsToWriter(projects, writer);
+        }
+
+        private async Task GetBranchesViaCommandLineAndSetToProjectBranches(IEnumerable<GitlabProject> projects, string branchesArgument)
+        {
+            if (branchesArgument == "all")
+            {
+                foreach (var project in projects)
                 {
-                    await TakeCommitsFromAllBranchesSince(sinceTimestamp, writer);
-                }
-                else
-                {
-                    var branches = branchesArgument.Split(',')
-                        .Select(bName => new GitlabBranch(bName)).ToArray();
-                    await TakeCommitsOnlyFromBranches(branches, sinceTimestamp, writer);
+                    var branches = await _branchesGetter.GetBranchesOfProject(project.Id);
+                    project.Branches = branches.ToArray();
                 }
             }
             else
             {
-                var projects = _projectsFromConfig.ToArray();
+                var branches = ConvertStringToBranches(branchesArgument).ToArray();
+
                 foreach (var project in projects)
                 {
-                    var branchesStringFromConfig = _config.GetBranchesStringOfProject(project.Id);
-
-                    if (branchesStringFromConfig == "all")
-                    {
-                        project.Branches = await _branchesGetter.GetBranchesOfProject(project.Id);
-                    }
-                    else
-                    {
-                        project.Branches = branchesStringFromConfig.Split(',')
-                            .Select(bName => new GitlabBranch(bName));
-                    }
+                    project.Branches = branches;
                 }
-
-                await WriteProjectsToWriter(projects, writer, sinceTimestamp);
             }
         }
 
-        private async Task TakeCommitsOnlyFromBranches(IEnumerable<GitlabBranch> branches,
-            DateTimeOffset sinceTimestamp, TextWriter writer)
+        private static IEnumerable<GitlabBranch> ConvertStringToBranches(string branchesArgument)
         {
-            foreach (var project in _projectsFromConfig)
-            {
-                project.Branches = branches.ToArray();
-                foreach (var branch in project.Branches)
-                {
-                    var commits = await _commitsGetter.GetCommitsOfProject(project.Id, branch.Name, sinceTimestamp);
-                    var commitsList = FilterCommitsByPatterns(commits).ToList();
-                    commitsList.Sort((c1, c2) => string.CompareOrdinal(c1.CreatedAt, c2.CreatedAt));
-                    branch.Commits = commitsList;
-                }
-
-                await writer.WriteLineAsync(project + "\r\n");
-            }
+            return branchesArgument.Split(',')
+                .Select(branchName => new GitlabBranch(branchName));
         }
 
-        private async Task WriteProjectsToWriter(IEnumerable<GitlabProject> projects, TextWriter writer,
-            DateTimeOffset sinceTimestamp)
+        private async Task GetBranchesViaConfigAndSetToProjectBranches(IEnumerable<GitlabProject> projects)
         {
             foreach (var project in projects)
             {
-                var branches = project.Branches.ToArray();
-                foreach (var branch in branches)
-                {
-                    var commits = await _commitsGetter.GetCommitsOfProject(project.Id, branch.Name, sinceTimestamp);
-                    var commitsList = FilterCommitsByPatterns(commits).ToList();
-                    commitsList.Sort((c1, c2) => string.CompareOrdinal(c1.CreatedAt, c2.CreatedAt));
-                    branch.Commits = commitsList;
-                }
-
-                project.Branches = branches;
-
-                await writer.WriteLineAsync(project + "\r\n");
+                var branchesStringFromConfig = _config.GetBranchesOfProjectAsString(project.Id);
+            
+                project.Branches = (branchesStringFromConfig == "all"
+                        ? await _branchesGetter.GetBranchesOfProject(project.Id)
+                        : ConvertStringToBranches(branchesStringFromConfig))
+                    .ToArray();
             }
         }
 
-        private async Task TakeCommitsFromAllBranchesSince(DateTimeOffset sinceTimestamp, TextWriter writer)
+        private async Task GetCommitsOfProjectBranchesAndSetToBranchCommits(IEnumerable<GitlabProject> projects,
+            DateTimeOffset sinceTimestamp)
         {
-            foreach (var project in _projectsFromConfig)
+            foreach (var project in projects)
+            foreach (var branch in project.Branches)
             {
-                var branches = await _branchesGetter.GetBranchesOfProject(project.Id);
-                project.Branches = branches;
-                foreach (var branch in project.Branches)
-                {
-                    var commits = await _commitsGetter.GetCommitsOfProject(project.Id, branch.Name, sinceTimestamp);
-                    var commitsList = FilterCommitsByPatterns(commits).ToList();
-                    commitsList.Sort((c1, c2) => string.CompareOrdinal(c1.CreatedAt, c2.CreatedAt));
-                    branch.Commits = commitsList;
-                }
+                var commits = await _commitsGetter.GetCommitsOfProject(project.Id, branch.Name, sinceTimestamp);
+                var filteredCommits = FilterCommitsByPatterns(commits).ToArray();
+                Array.Sort(filteredCommits);
+                branch.Commits = filteredCommits;
+            }
+        }
 
+        private async Task WriteProjectsToWriter(IEnumerable<GitlabProject> projects, TextWriter writer)
+        {
+            foreach (var project in projects)
+            {
                 await writer.WriteLineAsync(project + "\r\n");
             }
         }
@@ -153,7 +134,6 @@ namespace GitlabTask.Commands
             var yesterday = now.AddDays(-1);
             return yesterday;
         }
-
 
         private IEnumerable<GitlabCommit> FilterCommitsByPatterns(IEnumerable<GitlabCommit> commits)
         {

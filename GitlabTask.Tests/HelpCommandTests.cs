@@ -58,7 +58,8 @@ namespace GitlabTask.Tests
         [Test]
         public void HelpCommandForCommitsCommand()
         {
-            _commandsExecutor.RegisterCommand(new CommitsCommand(new ConfigStub(null), new CommitsGetterStub(null), new BranchesGetterStub(null)));
+            _commandsExecutor.RegisterCommand(new CommitsCommand(new ConfigStub(null), new CommitsGetterStub(null),
+                new BranchesGetterStub(null)));
 
             _commandsExecutor.Execute("help",
                 new Dictionary<string, string> {{"about", "commits"}});
