@@ -31,7 +31,8 @@ namespace GitlabTask
             }
             else
             {
-                await RunInteractiveMode(executor);
+                await writer.WriteAsync(
+                    $"\nЗапустите приложение, передав команду аргументом например 'command{_keyValueSeparator}help'");
             }
         }
 
@@ -84,22 +85,6 @@ namespace GitlabTask
                     return new KeyValuePair<string, string>(split[0], split[1]);
                 })
                 .ToDictionary(pair => pair.Key, pair => pair.Value);
-        }
-
-        public static async Task RunInteractiveMode(ICommandsExecutor executor)
-        {
-            Console.WriteLine($"\nВведите команду, например 'command{_keyValueSeparator}help'");
-            while (true)
-            {
-                var line = Console.ReadLine();
-                if (line == null || line == "exit")
-                    return;
-
-                var args = line.Split(" ");
-                await ConvertArgsAndExecute(executor, args);
-
-                Console.WriteLine();
-            }
         }
     }
 }
