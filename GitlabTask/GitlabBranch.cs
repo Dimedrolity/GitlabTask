@@ -5,8 +5,7 @@ namespace GitlabTask
 {
     public class GitlabBranch
     {
-        [JsonProperty(PropertyName = "name")] 
-        public string Name { get; }
+        [JsonProperty(PropertyName = "name")] public string Name { get; }
 
         public GitlabCommit[] Commits { get; set; }
 
@@ -17,8 +16,8 @@ namespace GitlabTask
 
         public override string ToString()
         {
-            return $"branch {Name}:" +
-                   "\r\n-- " + string.Join("\r\n-- ", Commits.Select(c => c.ToString()));
+            return $" {Name}:\r\n" +
+                   " - " + string.Join("\r\n - ", Commits.Select(c => c.ToString()));
         }
     }
 }

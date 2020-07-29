@@ -41,16 +41,16 @@ namespace GitlabTask.Tests
 
             var reader = new StringReader(_writer.ToString());
 
-            var expected = "APNS:\r\n" +
-                           $"- branch {branches[0].Name}:\r\n" +
-                           "-- Добавлены классы уведомлений\r\n" +
-                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
-                           "-- Добавлен генератор токенов\r\n" +
-                           $"- branch {branches[1].Name}:\r\n" +
-                           "-- Добавлены классы уведомлений\r\n" +
-                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
-                           "-- Добавлен генератор токенов\r\n" +
-                           "\r\n";
+            var expected = "APNS:\r\n\r\n" +
+                           $" {branches[0].Name}:\r\n" +
+                           " - Добавлены классы уведомлений\r\n" +
+                           " - Добавлены запросы в APNS с использованием Http2\r\n" +
+                           " - Добавлен генератор токенов\r\n" +
+                           $" {branches[1].Name}:\r\n" +
+                           " - Добавлены классы уведомлений\r\n" +
+                           " - Добавлены запросы в APNS с использованием Http2\r\n" +
+                           " - Добавлен генератор токенов\r\n" +
+                           "\r\n\r\n";
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
         }
@@ -80,16 +80,16 @@ namespace GitlabTask.Tests
 
             var reader = new StringReader(_writer.ToString());
 
-            var expected = "APNS:\r\n" +
-                           $"- branch {branches[0].Name}:\r\n" +
-                           "-- Добавлены классы уведомлений\r\n" +
-                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
-                           "-- Добавлен генератор токенов\r\n" +
-                           $"- branch {branches[1].Name}:\r\n" +
-                           "-- Добавлены классы уведомлений\r\n" +
-                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
-                           "-- Добавлен генератор токенов\r\n" +
-                           "\r\n";
+            var expected = "APNS:\r\n\r\n" +
+                           $" {branches[0].Name}:\r\n" +
+                           " - Добавлены классы уведомлений\r\n" +
+                           " - Добавлены запросы в APNS с использованием Http2\r\n" +
+                           " - Добавлен генератор токенов\r\n" +
+                           $" {branches[1].Name}:\r\n" +
+                           " - Добавлены классы уведомлений\r\n" +
+                           " - Добавлены запросы в APNS с использованием Http2\r\n" +
+                           " - Добавлен генератор токенов\r\n" +
+                           "\r\n\r\n";
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
         }
@@ -123,20 +123,20 @@ namespace GitlabTask.Tests
 
             var reader = new StringReader(_writer.ToString());
 
-            var expected = "APNS:\r\n" +
-                           $"- branch {branches[0].Name}:\r\n" +
-                           "-- Добавлены классы уведомлений\r\n" +
-                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
-                           "-- Добавлен генератор токенов\r\n" +
-                           $"- branch {branches[1].Name}:\r\n" +
-                           "-- Добавлены классы уведомлений\r\n" +
-                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
-                           "-- Добавлен генератор токенов\r\n" +
-                           $"- branch {branches[2].Name}:\r\n" +
-                           "-- Добавлены классы уведомлений\r\n" +
-                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
-                           "-- Добавлен генератор токенов\r\n" +
-                           "\r\n";
+            var expected = "APNS:\r\n\r\n" +
+                           $" {branches[0].Name}:\r\n" +
+                           " - Добавлены классы уведомлений\r\n" +
+                           " - Добавлены запросы в APNS с использованием Http2\r\n" +
+                           " - Добавлен генератор токенов\r\n" +
+                           $" {branches[1].Name}:\r\n" +
+                           " - Добавлены классы уведомлений\r\n" +
+                           " - Добавлены запросы в APNS с использованием Http2\r\n" +
+                           " - Добавлен генератор токенов\r\n" +
+                           $" {branches[2].Name}:\r\n" +
+                           " - Добавлены классы уведомлений\r\n" +
+                           " - Добавлены запросы в APNS с использованием Http2\r\n" +
+                           " - Добавлен генератор токенов\r\n" +
+                           "\r\n\r\n";
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
         }
@@ -170,16 +170,16 @@ namespace GitlabTask.Tests
 
             var reader = new StringReader(_writer.ToString());
 
-            var expected = "APNS:\r\n" +
-                           $"- branch {branches[0].Name}:\r\n" +
-                           "-- Добавлены классы уведомлений\r\n" +
-                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
-                           "-- Добавлен генератор токенов\r\n" +
-                           $"- branch {branches[1].Name}:\r\n" +
-                           "-- Добавлены классы уведомлений\r\n" +
-                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
-                           "-- Добавлен генератор токенов\r\n" +
-                           "\r\n";
+            var expected = "APNS:\r\n\r\n" +
+                           $" {branches[0].Name}:\r\n" +
+                           " - Добавлены классы уведомлений\r\n" +
+                           " - Добавлены запросы в APNS с использованием Http2\r\n" +
+                           " - Добавлен генератор токенов\r\n" +
+                           $" {branches[1].Name}:\r\n" +
+                           " - Добавлены классы уведомлений\r\n" +
+                           " - Добавлены запросы в APNS с использованием Http2\r\n" +
+                           " - Добавлен генератор токенов\r\n" +
+                           "\r\n\r\n";
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
         }
@@ -212,16 +212,16 @@ namespace GitlabTask.Tests
 
             var reader = new StringReader(_writer.ToString());
 
-            var expected = "APNS:\r\n" +
-                           $"- branch {branches[0].Name}:\r\n" +
-                           "-- Добавлены классы уведомлений\r\n" +
-                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
-                           "-- Добавлен генератор токенов\r\n" +
-                           $"- branch {branches[1].Name}:\r\n" +
-                           "-- Добавлены классы уведомлений\r\n" +
-                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
-                           "-- Добавлен генератор токенов\r\n" +
-                           "\r\n";
+            var expected = "APNS:\r\n\r\n" +
+                           $" {branches[0].Name}:\r\n" +
+                           " - Добавлены классы уведомлений\r\n" +
+                           " - Добавлены запросы в APNS с использованием Http2\r\n" +
+                           " - Добавлен генератор токенов\r\n" +
+                           $" {branches[1].Name}:\r\n" +
+                           " - Добавлены классы уведомлений\r\n" +
+                           " - Добавлены запросы в APNS с использованием Http2\r\n" +
+                           " - Добавлен генератор токенов\r\n" +
+                           "\r\n\r\n";
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
         }
@@ -254,16 +254,16 @@ namespace GitlabTask.Tests
 
             var reader = new StringReader(_writer.ToString());
 
-            var expected = "APNS:\r\n" +
-                           $"- branch {branches[0].Name}:\r\n" +
-                           "-- Добавлены классы уведомлений\r\n" +
-                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
-                           "-- Добавлен генератор токенов\r\n" +
-                           $"- branch {branches[1].Name}:\r\n" +
-                           "-- Добавлены классы уведомлений\r\n" +
-                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
-                           "-- Добавлен генератор токенов\r\n" +
-                           "\r\n";
+            var expected = "APNS:\r\n\r\n" +
+                           $" {branches[0].Name}:\r\n" +
+                           " - Добавлены классы уведомлений\r\n" +
+                           " - Добавлены запросы в APNS с использованием Http2\r\n" +
+                           " - Добавлен генератор токенов\r\n" +
+                           $" {branches[1].Name}:\r\n" +
+                           " - Добавлены классы уведомлений\r\n" +
+                           " - Добавлены запросы в APNS с использованием Http2\r\n" +
+                           " - Добавлен генератор токенов\r\n" +
+                           "\r\n\r\n";
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
         }
@@ -282,7 +282,7 @@ namespace GitlabTask.Tests
 
             var reader = new StringReader(_writer.ToString());
 
-            var expected = "APNS:\r\n- \r\n\r\n";
+            var expected = "APNS:\r\n\r\n\r\n\r\n\r\n";
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
         }

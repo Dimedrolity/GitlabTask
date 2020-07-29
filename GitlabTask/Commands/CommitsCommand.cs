@@ -48,7 +48,8 @@ namespace GitlabTask.Commands
             await WriteProjectsToWriter(projects, writer);
         }
 
-        private async Task GetBranchesViaCommandLineAndSetToProjectBranches(IEnumerable<GitlabProject> projects, string branchesArgument)
+        private async Task GetBranchesViaCommandLineAndSetToProjectBranches(IEnumerable<GitlabProject> projects,
+            string branchesArgument)
         {
             if (branchesArgument == "all")
             {
@@ -80,7 +81,7 @@ namespace GitlabTask.Commands
             foreach (var project in projects)
             {
                 var branchesStringFromConfig = _config.GetBranchesOfProjectAsString(project.Id);
-            
+
                 project.Branches = (branchesStringFromConfig == "all"
                         ? await _branchesGetter.GetBranchesOfProject(project.Id)
                         : ConvertStringToBranches(branchesStringFromConfig))
@@ -105,7 +106,7 @@ namespace GitlabTask.Commands
         {
             foreach (var project in projects)
             {
-                await writer.WriteLineAsync(project + "\r\n");
+                await writer.WriteLineAsync(project.ToString());
             }
         }
 
