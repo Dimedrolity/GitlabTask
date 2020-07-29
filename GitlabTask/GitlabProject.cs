@@ -17,7 +17,10 @@ namespace GitlabTask
         public override string ToString()
         {
             return $"{Name}:" +
-                   "\r\n- " + string.Join("\r\n- ", Branches.Select(b => b.ToString()));
+                   "\r\n- " +
+                   string.Join("\r\n- ",
+                       Branches.Where(b => b.Commits != null && b.Commits.Length != 0)
+                           .Select(b => b.ToString()));
         }
     }
 }

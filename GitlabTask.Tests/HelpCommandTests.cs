@@ -33,7 +33,7 @@ namespace GitlabTask.Tests
                            "- command:help\r\n" +
                            "- command:commits\r\n" +
                            "- command:projects\r\n" +
-                           "Более подробная информация -> 'command:help about:<command>'\n";
+                           "Более подробная информация -> 'command:help about:<название команды>'\n";
 
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
@@ -49,7 +49,7 @@ namespace GitlabTask.Tests
 
             var expected = "Описание команды help:\r\n" +
                            "- " + "По умолчанию показывает список доступных команд.\n" +
-                           "При указании аргумента 'about:<command>' выводит подробное описание команды.\n";
+                           "При указании аргумента 'about:<название команды>' выводит подробное описание команды.\n";
 
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);

@@ -267,5 +267,24 @@ namespace GitlabTask.Tests
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
         }
+
+        [Test]
+        public void CommitsCommand_ProjectsWithoutBranches()
+        {
+            var apnsProject = new GitlabProject("APNS", "allBranches");
+            var branches = new GitlabBranch[0];
+
+            _commandsExecutor.RegisterCommand(new CommitsCommand(
+                new ConfigStub(new[] {apnsProject}),
+                null,
+                new BranchesGetterStub(branches)));
+            _commandsExecutor.Execute("commits");
+
+            var reader = new StringReader(_writer.ToString());
+
+            var expected = "APNS:\r\n- \r\n\r\n";
+            var actual = reader.ReadToEnd();
+            Assert.AreEqual(expected, actual);
+        }
     }
 }
