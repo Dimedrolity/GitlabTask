@@ -1,12 +1,12 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace GitlabTask.Tests
 {
-    public class GitlabCommitsGetterIntegrationTests
+    public class GitlabBranchesGetterIntegrationTests
     {
         private StringWriter _writer;
 
@@ -25,19 +25,17 @@ namespace GitlabTask.Tests
         }
 
         [Test]
-        public async Task RequestAllCommitsFrom2018()
+        public async Task RequestAllCommitsInLast1000Days()
         {
-            var getter = new GitlabCommitsGetter(new JsonConverter(), new ConfigStub(null), _client);
+            var getter = new GitlabBranchesGetter(new JsonConverter(), new ConfigStub(null), _client);
 
-            var commits = await getter.GetCommitsOfProject("20095396", "master",
-                new DateTimeOffset(new DateTime(2018, 1, 1)));
+            var branches = await getter.GetBranchesOfProject("20095396");
 
-            await _writer.WriteAsync(string.Join("\r\n", commits));
+            await _writer.WriteAsync(string.Join("\r\n", branches.Select((b => b.Name))));
 
             var reader = new StringReader(_writer.ToString());
 
-            var expected = "Update README.md\r\n" +
-                           "Initial template creation";
+            var expected = "master";
 
             var actual = await reader.ReadToEndAsync();
             Assert.AreEqual(expected, actual);

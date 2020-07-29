@@ -5,11 +5,11 @@ using NUnit.Framework;
 
 namespace GitlabTask.Tests
 {
-    public class ConfigTests
+    public class ConfigIntegrationTests
     {
         private IConfig _config;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             var configurationBuilder = new ConfigurationBuilder()
@@ -19,31 +19,38 @@ namespace GitlabTask.Tests
         }
 
         [Test]
-        public void ConfigProjectsIsNotEmpty()
+        public void Config_ProjectsExist()
         {
             var projects = _config.GetProjects();
             Assert.IsTrue(projects != null && projects.Any());
         }
 
         [Test]
-        public void ConfigPatternsIsNotEmpty()
+        public void Config_PatternsExist()
         {
             var patterns = _config.GetPatternsOfExcludedTitle();
             Assert.IsTrue(patterns != null && patterns.Any());
         }
 
         [Test]
-        public void ConfigGitlabDomainNameExists()
+        public void Config_DomainNameExists()
         {
             var domainName = _config.GetGitlabDomainName();
-            Assert.IsTrue(domainName != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(domainName));
         }
 
         [Test]
-        public void ConfigPersonalAccessTokenExists()
+        public void Config_PersonalAccessTokenExists()
         {
             var personalAccessToken = _config.GetPersonalAccessToken();
-            Assert.IsTrue(personalAccessToken != null);
+            Assert.IsTrue(!string.IsNullOrEmpty(personalAccessToken));
+        }
+
+        [Test]
+        public void Config_BranchesExists()
+        {
+            var branchesOfProjectAsString = _config.GetBranchesOfProjectAsString("000");
+            Assert.IsTrue(string.IsNullOrEmpty(branchesOfProjectAsString));
         }
     }
 }

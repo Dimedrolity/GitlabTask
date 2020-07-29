@@ -183,5 +183,89 @@ namespace GitlabTask.Tests
             var actual = reader.ReadToEnd();
             Assert.AreEqual(expected, actual);
         }
+
+        [Test]
+        public void CommitsCommand_WithHoursArgument()
+        {
+            var apnsProject = new GitlabProject("APNS", "allBranches");
+            var branches = new[]
+            {
+                new GitlabBranch("qwe"),
+                new GitlabBranch("asd"),
+            };
+            var apnsCommits = new[]
+            {
+                new GitlabCommit("Добавлен генератор токенов", "2020-07-23T16:04:00Z"),
+                new GitlabCommit("Добавлены запросы в APNS с использованием Http2", "2020-07-22T16:04:00Z"),
+                new GitlabCommit("Добавлены классы уведомлений", "2020-07-21T16:04:00Z"),
+            };
+
+            _commandsExecutor.RegisterCommand(new CommitsCommand(
+                new ConfigStub(new[] {apnsProject}),
+                new CommitsGetterStub(apnsCommits),
+                new BranchesGetterStub(branches)));
+            _commandsExecutor.Execute("commits",
+                new Dictionary<string, string>
+                {
+                    {"h", (1000 * 24).ToString()}, //1000 дней
+                });
+
+            var reader = new StringReader(_writer.ToString());
+
+            var expected = "APNS:\r\n" +
+                           $"- branch {branches[0].Name}:\r\n" +
+                           "-- Добавлены классы уведомлений\r\n" +
+                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
+                           "-- Добавлен генератор токенов\r\n" +
+                           $"- branch {branches[1].Name}:\r\n" +
+                           "-- Добавлены классы уведомлений\r\n" +
+                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
+                           "-- Добавлен генератор токенов\r\n" +
+                           "\r\n";
+            var actual = reader.ReadToEnd();
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void CommitsCommand_WithDaysArgument()
+        {
+            var apnsProject = new GitlabProject("APNS", "allBranches");
+            var branches = new[]
+            {
+                new GitlabBranch("qwe"),
+                new GitlabBranch("asd"),
+            };
+            var apnsCommits = new[]
+            {
+                new GitlabCommit("Добавлен генератор токенов", "2020-07-23T16:04:00Z"),
+                new GitlabCommit("Добавлены запросы в APNS с использованием Http2", "2020-07-22T16:04:00Z"),
+                new GitlabCommit("Добавлены классы уведомлений", "2020-07-21T16:04:00Z"),
+            };
+
+            _commandsExecutor.RegisterCommand(new CommitsCommand(
+                new ConfigStub(new[] {apnsProject}),
+                new CommitsGetterStub(apnsCommits),
+                new BranchesGetterStub(branches)));
+            _commandsExecutor.Execute("commits",
+                new Dictionary<string, string>
+                {
+                    {"d", (1000).ToString()}, //1000 дней
+                });
+
+            var reader = new StringReader(_writer.ToString());
+
+            var expected = "APNS:\r\n" +
+                           $"- branch {branches[0].Name}:\r\n" +
+                           "-- Добавлены классы уведомлений\r\n" +
+                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
+                           "-- Добавлен генератор токенов\r\n" +
+                           $"- branch {branches[1].Name}:\r\n" +
+                           "-- Добавлены классы уведомлений\r\n" +
+                           "-- Добавлены запросы в APNS с использованием Http2\r\n" +
+                           "-- Добавлен генератор токенов\r\n" +
+                           "\r\n";
+            var actual = reader.ReadToEnd();
+            Assert.AreEqual(expected, actual);
+        }
     }
 }
