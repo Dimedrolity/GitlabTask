@@ -14,7 +14,7 @@ namespace GitlabTask.Commands
 
         public HelpCommand(Func<List<Command>> getRegisteredCommands)
             : base("help", "По умолчанию показывает список доступных команд.\n" +
-                           "При указании аргумента 'about:<command>' выводит подробное описание команды.\n")
+                           "При указании аргумента 'about:<название команды>' выводит подробное описание команды.\n")
         {
             _getRegisteredCommands = getRegisteredCommands;
         }
@@ -27,7 +27,7 @@ namespace GitlabTask.Commands
                 var commandNames = commands.Select(c => c.Name);
                 await writer.WriteAsync("Список доступных команд:\r\n" +
                                         $"- command:{string.Join("\r\n- command:", commandNames)}\r\n" +
-                                        "Более подробная информация -> 'command:help about:<command>'\n");
+                                        "Более подробная информация -> 'command:help about:<название команды>'\n");
                 return;
             }
 

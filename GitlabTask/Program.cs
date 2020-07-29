@@ -50,28 +50,40 @@ namespace GitlabTask
 
         private static async Task ConvertArgsAndExecute(ICommandsExecutor executor, IEnumerable<string> args)
         {
-            var argsAsDictionary = ConvertArgsToDictionary(args);
-            var commandName = argsAsDictionary["command"];
-            argsAsDictionary.Remove("command");
-            await executor.Execute(commandName, argsAsDictionary);
+            Dictionary<string, string> argsAsDictionary = null;
+            try
+            {
+                argsAsDictionary = ConvertArgsToDictionary(args);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            if (argsAsDictionary != null)
+            {
+                var commandName = argsAsDictionary["command"];
+                argsAsDictionary.Remove("command");
+                await executor.Execute(commandName, argsAsDictionary);
+            }
         }
 
         private static Dictionary<string, string> ConvertArgsToDictionary(IEnumerable<string> args)
         {
-            var dictArgs = args
+            return args
                 .Select(keyAndValue =>
                 {
                     var split = keyAndValue.Split(_keyValueSeparator);
                     if (split.Length != 2)
                     {
                         throw new ArgumentException($"Неправильный формат ввода - {keyAndValue}\n" +
-                                                    $"Правильный формат 'command{_keyValueSeparator}<название команды>'");
+                                                    $"Правильный формат - command{_keyValueSeparator}<название команды>," +
+                                                    " например, command:help");
                     }
 
                     return new KeyValuePair<string, string>(split[0], split[1]);
                 })
                 .ToDictionary(pair => pair.Key, pair => pair.Value);
-            return dictArgs;
         }
 
         public static async Task RunInteractiveMode(ICommandsExecutor executor)
