@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace GitlabTask
+namespace GitlabTask.Interfaces
 {
     public interface IBranchesGetter
     {

@@ -1,20 +1,16 @@
-using System.Collections.Generic;
 using System.IO;
-using GitlabTask.Commands;
 using NUnit.Framework;
 
 namespace GitlabTask.Tests
 {
     public class CommitsCommandTests
     {
-        private CommandsExecutor _commandsExecutor;
         private StringWriter _writer;
 
         [SetUp]
         public void Setup()
         {
             _writer = new StringWriter();
-            _commandsExecutor = new CommandsExecutor(_writer);
         }
 
         [Test]
@@ -33,11 +29,11 @@ namespace GitlabTask.Tests
                 new GitlabCommit("Добавлены классы уведомлений", "2020-07-21T16:04:00Z"),
             };
 
-            _commandsExecutor.RegisterCommand(new CommitsCommand(
+            var cmd = new CommitsCommand(
                 new ConfigStub(new[] {apnsProject}),
                 new CommitsGetterStub(apnsCommits),
-                new BranchesGetterStub(branches)));
-            _commandsExecutor.Execute("commits");
+                new BranchesGetterStub(branches));
+            cmd.Execute(0, 1, null, _writer);
 
             var reader = new StringReader(_writer.ToString());
 
@@ -72,11 +68,11 @@ namespace GitlabTask.Tests
                 new GitlabCommit("Добавлены классы уведомлений", "2020-07-21T16:04:00Z"),
             };
 
-            _commandsExecutor.RegisterCommand(new CommitsCommand(
+            var cmd = new CommitsCommand(
                 new ConfigStub(new[] {apnsProject}),
                 new CommitsGetterStub(apnsCommits),
-                new BranchesGetterStub(branches)));
-            _commandsExecutor.Execute("commits");
+                new BranchesGetterStub(branches));
+            cmd.Execute(0, 1, null, _writer);
 
             var reader = new StringReader(_writer.ToString());
 
@@ -111,15 +107,11 @@ namespace GitlabTask.Tests
                 new GitlabCommit("Добавлены классы уведомлений", "2020-07-21T16:04:00Z"),
             };
 
-            _commandsExecutor.RegisterCommand(new CommitsCommand(
+            var cmd = new CommitsCommand(
                 new ConfigStub(new[] {apnsProject}),
                 new CommitsGetterStub(apnsCommits),
-                new BranchesGetterStub(branches)));
-            _commandsExecutor.Execute("commits",
-                new Dictionary<string, string>
-                {
-                    {"branches", "all"}
-                });
+                new BranchesGetterStub(branches));
+            cmd.Execute(0, 1, "all", _writer);
 
             var reader = new StringReader(_writer.ToString());
 
@@ -158,15 +150,11 @@ namespace GitlabTask.Tests
                 new GitlabCommit("Добавлены классы уведомлений", "2020-07-21T16:04:00Z"),
             };
 
-            _commandsExecutor.RegisterCommand(new CommitsCommand(
+            var cmd = new CommitsCommand(
                 new ConfigStub(new[] {apnsProject}),
                 new CommitsGetterStub(apnsCommits),
-                new BranchesGetterStub(branches)));
-            _commandsExecutor.Execute("commits",
-                new Dictionary<string, string>
-                {
-                    {"branches", "qwe,asd"}
-                });
+                new BranchesGetterStub(branches));
+            cmd.Execute(0, 1, "qwe,asd", _writer);
 
             var reader = new StringReader(_writer.ToString());
 
@@ -200,15 +188,11 @@ namespace GitlabTask.Tests
                 new GitlabCommit("Добавлены классы уведомлений", "2020-07-21T16:04:00Z"),
             };
 
-            _commandsExecutor.RegisterCommand(new CommitsCommand(
+            var cmd = new CommitsCommand(
                 new ConfigStub(new[] {apnsProject}),
                 new CommitsGetterStub(apnsCommits),
-                new BranchesGetterStub(branches)));
-            _commandsExecutor.Execute("commits",
-                new Dictionary<string, string>
-                {
-                    {"h", (1000 * 24).ToString()}, //1000 дней
-                });
+                new BranchesGetterStub(branches));
+            cmd.Execute(1000 * 24, 0, null, _writer);
 
             var reader = new StringReader(_writer.ToString());
 
@@ -242,15 +226,12 @@ namespace GitlabTask.Tests
                 new GitlabCommit("Добавлены классы уведомлений", "2020-07-21T16:04:00Z"),
             };
 
-            _commandsExecutor.RegisterCommand(new CommitsCommand(
+
+            var cmd = new CommitsCommand(
                 new ConfigStub(new[] {apnsProject}),
                 new CommitsGetterStub(apnsCommits),
-                new BranchesGetterStub(branches)));
-            _commandsExecutor.Execute("commits",
-                new Dictionary<string, string>
-                {
-                    {"d", (1000).ToString()}, //1000 дней
-                });
+                new BranchesGetterStub(branches));
+            cmd.Execute(0, 1000, null, _writer);
 
             var reader = new StringReader(_writer.ToString());
 
@@ -274,11 +255,11 @@ namespace GitlabTask.Tests
             var apnsProject = new GitlabProject("APNS", "allBranches");
             var branches = new GitlabBranch[0];
 
-            _commandsExecutor.RegisterCommand(new CommitsCommand(
+            var cmd = new CommitsCommand(
                 new ConfigStub(new[] {apnsProject}),
                 null,
-                new BranchesGetterStub(branches)));
-            _commandsExecutor.Execute("commits");
+                new BranchesGetterStub(branches));
+            cmd.Execute(0, 1, null, _writer);
 
             var reader = new StringReader(_writer.ToString());
 

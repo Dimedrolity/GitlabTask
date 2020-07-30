@@ -6,9 +6,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GitlabTask.Interfaces;
 
-namespace GitlabTask.Commands
+namespace GitlabTask
 {
-    public class CommitsCommand : Command
+    public class CommitsCommand
     {
         private readonly IConfig _config;
         private readonly ICommitsGetter _commitsGetter;
@@ -16,11 +16,6 @@ namespace GitlabTask.Commands
         private readonly IEnumerable<string> _patternsOfExcludedTitle;
 
         public CommitsCommand(IConfig config, ICommitsGetter commitsGetter, IBranchesGetter branchesGetter)
-            : base("commits", "Показывает список коммитов в хронологическом порядке.\n" +
-                              "По умолчанию выводятся коммиты за последний день.\n" +
-                              "Это можно изменить, передав аргументы h:<число> и/или d:<число>, " +
-                              "тогда список будет состоять из коммитов за последние h часов и d дней.\n" +
-                              "Например, command:commits h:3 d:1, коммиты за последние 1 день и 3 часа")
         {
             _config = config;
             _commitsGetter = commitsGetter;
@@ -29,15 +24,14 @@ namespace GitlabTask.Commands
             _patternsOfExcludedTitle = config.GetPatternsOfExcludedTitle();
         }
 
-        public override async Task Execute(Dictionary<string, string> args, TextWriter writer)
+        public async Task Execute(int hours, int days, string branches, TextWriter writer)
         {
             var projects = _config.GetProjects().ToArray();
-            var sinceTimestamp = GetTimestampAffectedByArguments(args);
+            var sinceTimestamp = GetTimestampAffectedByArguments(hours, days);
 
-            if (args != null && args.ContainsKey("branches"))
+            if (branches != null)
             {
-                var branchesFromCommandLine = args["branches"];
-                await GetBranchesViaCommandLineAndSetToProjectBranches(projects, branchesFromCommandLine);
+                await GetBranchesViaCommandLineAndSetToProjectBranches(projects, branches);
             }
             else
             {
@@ -110,30 +104,9 @@ namespace GitlabTask.Commands
             }
         }
 
-        private static DateTimeOffset GetTimestampAffectedByArguments(IReadOnlyDictionary<string, string> args)
+        private static DateTimeOffset GetTimestampAffectedByArguments(int hours, int days)
         {
-            var now = DateTimeOffset.Now;
-            var date = now;
-
-            if (args != null && (args.ContainsKey("h") || args.ContainsKey("d")))
-            {
-                if (args.ContainsKey("h"))
-                {
-                    var hours = int.Parse(args["h"]);
-                    date = date.AddHours(hours * -1);
-                }
-
-                if (args.ContainsKey("d"))
-                {
-                    var days = int.Parse(args["d"]);
-                    date = date.AddDays(days * -1);
-                }
-
-                return date;
-            }
-
-            var yesterday = now.AddDays(-1);
-            return yesterday;
+            return DateTimeOffset.Now.AddHours(hours * -1).AddDays(days * -1);
         }
 
         private IEnumerable<GitlabCommit> FilterCommitsByPatterns(IEnumerable<GitlabCommit> commits)
