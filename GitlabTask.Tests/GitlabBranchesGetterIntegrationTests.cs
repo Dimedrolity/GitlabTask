@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using FakeItEasy;
+using GitlabTask.Interfaces;
 using NUnit.Framework;
 
 namespace GitlabTask.Tests
@@ -27,7 +29,9 @@ namespace GitlabTask.Tests
         [Test]
         public async Task RequestAllCommitsInLast1000Days()
         {
-            var getter = new GitlabBranchesGetter(new JsonConverter(), new ConfigStub(null), _client);
+            var config = A.Fake<IConfig>();
+            A.CallTo(() => config.GetGitlabDomainName()).Returns("gitlab.com");
+            var getter = new GitlabBranchesGetter(new JsonConverter(), config, _client);
 
             var branches = await getter.GetBranchesOfProject("20095396");
 

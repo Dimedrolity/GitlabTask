@@ -2,6 +2,8 @@
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using FakeItEasy;
+using GitlabTask.Interfaces;
 using NUnit.Framework;
 
 namespace GitlabTask.Tests
@@ -27,7 +29,9 @@ namespace GitlabTask.Tests
         [Test]
         public async Task RequestAllCommitsFrom2018()
         {
-            var getter = new GitlabCommitsGetter(new JsonConverter(), new ConfigStub(null), _client);
+            var config = A.Fake<IConfig>();
+            A.CallTo(() => config.GetGitlabDomainName()).Returns("gitlab.com");
+            var getter = new GitlabCommitsGetter(new JsonConverter(), config, _client);
 
             var commits = await getter.GetCommitsOfProject("20095396", "master",
                 new DateTimeOffset(new DateTime(2018, 1, 1)));
