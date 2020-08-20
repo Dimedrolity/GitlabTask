@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using GitlabTask.Interfaces;
@@ -18,9 +20,11 @@ namespace GitlabTask
         /// <param name="days">Показать коммиты за последние days дней</param>
         /// <param name="branches">Переопределяет список бранчей, из которых показывать коммиты.
         /// Это применится ко всем проектам, независимо от того, что для них указано в конфиге!</param>
-        private static async Task Main(int hours, int days, string branches)
+        /// <param name="output">При использовании аргумента будет создан/перезаписан файл.
+        /// Файл будет иметь название значения аргумента. В этот файл будет произведен вывод.
+        /// Пример валидного значения – out.txt</param>
+        private static async Task Main(int hours, int days, string branches, string output)
         {
-            var writer = Console.Out;
             var config = GetConfig();
             var httpClient = new HttpClient();
             var jsonConverter = new JsonConverter();
@@ -28,7 +32,9 @@ namespace GitlabTask
                 new GitlabCommitsGetter(jsonConverter, config, httpClient),
                 new GitlabBranchesGetter(jsonConverter, config, httpClient));
 
-            await commitsCommand.Execute(hours, days, branches, writer);
+            var writer = output == null ? Console.Out : new StreamWriter(output);
+            await WriteStartDate(writer, hours, days);
+            await commitsCommand.Execute(writer, hours, days, branches);
         }
 
         private static IConfig GetConfig()
@@ -36,7 +42,17 @@ namespace GitlabTask
             var configurationBuilder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", false, true)
                 .Build();
+            
             return new Config(configurationBuilder);
+        }
+
+        private static async Task WriteStartDate(TextWriter writer, int hours, int days)
+        {
+            var startDate = DateTime.Now.AddDays(-days).AddHours(-hours);
+            var startDateToString = startDate.ToString("dddd h:mm, d MMMM", CultureInfo.InvariantCulture);
+
+            await writer.WriteLineAsync(
+                $"Коммиты, начиная с {startDateToString} (за последние {days} дней и {hours} часов)\n");
         }
     }
 }

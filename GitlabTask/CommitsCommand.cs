@@ -24,7 +24,7 @@ namespace GitlabTask
             _patternsOfExcludedTitle = config.GetPatternsOfExcludedTitle();
         }
 
-        public async Task Execute(int hours, int days, string branches, TextWriter writer)
+        public async Task Execute(TextWriter writer, int hours, int days, string branches)
         {
             var projects = _config.GetProjects().ToArray();
             var sinceTimestamp = GetTimestampAffectedByArguments(hours, days);
@@ -98,9 +98,12 @@ namespace GitlabTask
 
         private async Task WriteProjectsToWriter(IEnumerable<GitlabProject> projects, TextWriter writer)
         {
-            foreach (var project in projects)
+            await using (writer)
             {
-                await writer.WriteLineAsync(project.ToString());
+                foreach (var project in projects)
+                {
+                    await writer.WriteLineAsync(project.ToString());
+                }
             }
         }
 

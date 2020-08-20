@@ -46,7 +46,7 @@ namespace GitlabTask.Tests
                 configStub,
                 commitsGetterStub,
                 branchesGetterStub);
-            cmd.Execute(0, 1, null, _writer);
+            cmd.Execute(_writer, 0, 1, null);
 
             var reader = new StringReader(_writer.ToString());
 
@@ -95,7 +95,7 @@ namespace GitlabTask.Tests
                 config,
                 commitsGetterStub,
                 branchesGetterStub);
-            cmd.Execute(0, 1, null, _writer);
+            cmd.Execute(_writer, 0, 1, null);
 
             var reader = new StringReader(_writer.ToString());
 
@@ -143,7 +143,7 @@ namespace GitlabTask.Tests
                 config,
                 commitsGetterStub,
                 branchesGetterStub);
-            cmd.Execute(0, 1, "all", _writer);
+            cmd.Execute(_writer, 0, 1, "all");
 
             var reader = new StringReader(_writer.ToString());
 
@@ -195,7 +195,7 @@ namespace GitlabTask.Tests
                 config,
                 commitsGetterStub,
                 branchesGetterStub);
-            cmd.Execute(0, 1, "qwe,asd", _writer);
+            cmd.Execute(_writer, 0, 1, "qwe,asd");
 
             var reader = new StringReader(_writer.ToString());
 
@@ -243,7 +243,7 @@ namespace GitlabTask.Tests
                 config,
                 commitsGetterStub,
                 branchesGetterStub);
-            cmd.Execute(1000 * 24, 0, null, _writer);
+            cmd.Execute(_writer, 1000 * 24, 0, null);
 
             var reader = new StringReader(_writer.ToString());
 
@@ -291,7 +291,7 @@ namespace GitlabTask.Tests
                 config,
                 commitsGetterStub,
                 branchesGetterStub);
-            cmd.Execute(0, 1000, null, _writer);
+            cmd.Execute(_writer, 0, 1000, null);
 
             var reader = new StringReader(_writer.ToString());
 
@@ -325,7 +325,7 @@ namespace GitlabTask.Tests
                 config,
                 null,
                 branchesGetterStub);
-            cmd.Execute(0, 1, null, _writer);
+            cmd.Execute(_writer, 0, 1, null);
 
             var reader = new StringReader(_writer.ToString());
 
